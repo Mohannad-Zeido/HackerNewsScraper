@@ -53,24 +53,6 @@ func getPostNodes(node *html.Node) []postNode {
 	}
 }
 
-func getNextSiblingElementNode(node *html.Node) *html.Node {
-	for sibling := node.NextSibling; sibling != nil; sibling = sibling.NextSibling {
-		if sibling.Type == html.ElementNode {
-			return sibling
-		}
-	}
-	return nil
-}
-
-func getFirstChildElementNode(node *html.Node) *html.Node {
-	for child := node.FirstChild; child != nil; child = child.NextSibling {
-		if child.Type == html.ElementNode {
-			return child
-		}
-	}
-	return nil
-}
-
 func containsAttribute(attributes []html.Attribute, attribute string) bool {
 	for _, a := range attributes {
 		if a.Val == attribute {
@@ -107,6 +89,24 @@ func tableFinder(node *html.Node) *html.Node {
 		result := tableFinder(child)
 		if result != nil {
 			return result
+		}
+	}
+	return nil
+}
+
+func getNextSiblingElementNode(node *html.Node) *html.Node {
+	for sibling := node.NextSibling; sibling != nil; sibling = sibling.NextSibling {
+		if sibling.Type == html.ElementNode {
+			return sibling
+		}
+	}
+	return nil
+}
+
+func getFirstChildElementNode(node *html.Node) *html.Node {
+	for child := node.FirstChild; child != nil; child = child.NextSibling {
+		if child.Type == html.ElementNode {
+			return child
 		}
 	}
 	return nil
