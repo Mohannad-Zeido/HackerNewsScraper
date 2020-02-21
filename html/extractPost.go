@@ -13,7 +13,7 @@ type postNode struct {
 const (
 	tableTag       = "table"
 	generalInfoTag = "athing"
-	postTableTag   = "itemlist"
+	postsTableTag  = "itemlist"
 	tbodyTag       = "tbody"
 	detailsTag     = ""
 )
@@ -68,12 +68,11 @@ func findPosts(node *html.Node) *html.Node {
 		return nil
 	}
 
-	for child := getFirstChildElementNode(table); child != nil; child = getNextSiblingElementNode(child) {
-		if child.Type == html.ElementNode && child.Data == tbodyTag {
-			return child
-		}
+	tb := getFirstChildElementNode(table)
+	if tb.Data != tbodyTag {
+		return nil
 	}
-	return nil
+	return tb
 }
 
 func tableFinder(node *html.Node) *html.Node {
@@ -81,7 +80,7 @@ func tableFinder(node *html.Node) *html.Node {
 		return nil
 	}
 
-	if node.Type == html.ElementNode && node.Data == tableTag && containsAttribute(node.Attr, postTableTag) {
+	if node.Type == html.ElementNode && node.Data == tableTag && containsAttribute(node.Attr, postsTableTag) {
 		return node
 	}
 
