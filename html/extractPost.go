@@ -63,7 +63,7 @@ func getNextSiblingElementNode(node *html.Node) *html.Node {
 }
 
 func getFirstChildElementNode(node *html.Node) *html.Node {
-	for child := node.FirstChild; child != nil; child = child.FirstChild {
+	for child := node.FirstChild; child != nil; child = child.NextSibling {
 		if child.Type == html.ElementNode {
 			return child
 		}
@@ -103,7 +103,7 @@ func tableFinder(node *html.Node) *html.Node {
 		return node
 	}
 
-	for child := node.FirstChild; child != nil; child = child.NextSibling {
+	for child := getFirstChildElementNode(node); child != nil; child = getNextSiblingElementNode(child) {
 		result := tableFinder(child)
 		if result != nil {
 			return result
