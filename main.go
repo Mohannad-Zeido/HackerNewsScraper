@@ -19,7 +19,10 @@ type responseItem struct {
 
 func main() {
 	c := colly.NewCollector()
-	PostCountWanted := 2
+	PostW := 10
+	backupNumber := 4
+	offset := 0
+	PostCountWanted := PostW + backupNumber
 	cou := float64(PostCountWanted) / float64(30)
 	count := math.Ceil(cou)
 	requestsDone := 0
@@ -29,6 +32,7 @@ func main() {
 		fmt.Println("Visiting", r.URL.String())
 	})
 
+	//var res []responseItem
 	var title []string
 	var uri []string
 	var author []string
@@ -36,14 +40,35 @@ func main() {
 	var numComments []int
 	var rank []int
 
+	postsToKeep := make(map[int]*responseItem)
+	postStatusInd := make(map[int]bool)
+
+	//currentPostIndex := 0
+
 	c.OnHTML("body", func(e *colly.HTMLElement) {
 
 		e.ForEachWithBreak("td > a.storylink", func(i int, element *colly.HTMLElement) bool {
+
 			if len(title) >= PostCountWanted {
 				return false
 			}
-			title = append(title, element.Text)
-			uri = append(uri, element.Attr("href"))
+			postStatusInd[offset+i] = true
+			if element.Text == "" {
+				postStatusInd[offset+i] = false
+			} else {
+				postsToKeep[offset+i].title = element.Text
+				title = append(title, element.Text)
+			}
+			if postStatusInd[offset+i] {
+				//check valid uro
+				if element.Attr("href") == "" {
+					postStatusInd[offset+i] = false
+				} else {
+					postsToKeep[offset+i].uri = element.Attr("href")
+					uri = append(uri, element.Attr("href"))
+				}
+
+			}
 
 			return true
 		})
@@ -87,6 +112,7 @@ func main() {
 	c.OnScraped(func(response *colly.Response) {
 
 		if requestsDone < int(count) {
+			offset += 30
 			c.Visit("https://news.ycombinator.com/news?p=" + strconv.Itoa(requestsDone+1))
 			return
 		}
