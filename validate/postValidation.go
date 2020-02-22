@@ -3,7 +3,7 @@ package validate
 import "net/http"
 
 func IsValidText(text string) bool {
-	if text == "" || len(text) < 256 {
+	if text == "" || len(text) > 256 {
 		return false
 	}
 	return true
