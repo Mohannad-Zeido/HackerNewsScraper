@@ -7,8 +7,8 @@ import (
 )
 
 func GetData(url string) (*html.Node, error) {
-	//return readDataFromWebsite(url)
-	return readDataFromFile(url)
+	return readDataFromWebsite(url)
+	//return readDataFromFile(url)
 
 }
 
