@@ -18,29 +18,32 @@ const (
 	detailsTag        = "subtext"
 	endOfPostsAttrVal = "morespace"
 	nonNumbers        = "\\D"
+	internalUri       = "^item\\?id=[0-9a-zA-Z]*"
 )
 
 var (
-	nonNumbersRegex, _ = regexp.Compile(nonNumbers)
+	nonNumbersRegex, _  = regexp.Compile(nonNumbers)
+	internalUriRegex, _ = regexp.Compile(internalUri)
 )
 
 // todo i need to return error rather than nil when it is actually a parsing/traversal error
 func GetPosts(numPosts int) []types.Post {
 	//data, err := parse.GetData("data.html")
 	currentPage := 0
+	postsLeftToGet := numPosts
 	var posts []types.Post
 	for {
 		currentPage += 1
-		pageNode, err := parse.GetData("https://news.ycombinator.com/news?p=" + strconv.Itoa(currentPage))
+		pageNode, err := parse.GetData(currentPage)
 		if err != nil {
 			panic(err)
 		}
-		posts = append(posts, getPostNodes(pageNode, numPosts)...)
-
-		if len(posts) >= numPosts {
+		postsFromPage := getPostNodes(pageNode, postsLeftToGet)
+		posts = append(posts, postsFromPage...)
+		postsLeftToGet = postsLeftToGet - len(postsFromPage)
+		if postsLeftToGet == 0 {
 			return posts
 		}
-		numPosts = numPosts - len(posts)
 	}
 
 }
@@ -138,10 +141,11 @@ func parseGeneralInfoNode(node *html.Node) (string, string, int, bool) {
 	}
 	href := getFirstChildElementNode(getNextSiblingElementNode(getNextSiblingElementNode(rankTD)))
 	uri := attributeValue(href.Attr, hrefAttr)
+	if internalUriRegex.MatchString(uri) {
+		uri = "https://news.ycombinator.com/" + uri
+	}
 	if !validate.IsValidUri(uri) {
-		if !validate.IsValidUri("https://news.ycombinator.com/" + uri) {
-			return "", "", 0, false
-		}
+		return "", "", 0, false
 	}
 	title := tagText(href)
 	if !validate.IsValidText(title) {

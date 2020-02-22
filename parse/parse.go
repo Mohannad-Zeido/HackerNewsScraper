@@ -4,11 +4,12 @@ import (
 	"golang.org/x/net/html"
 	"net/http"
 	"os"
+	"strconv"
 )
 
-func GetData(url string) (*html.Node, error) {
-	return readDataFromWebsite(url)
-	//return readDataFromFile(url)
+func GetData(page int) (*html.Node, error) {
+	return readDataFromWebsite("https://news.ycombinator.com/news?p=" + strconv.Itoa(page))
+	//return readDataFromFile("data" + strconv.Itoa(page) + ".html")
 
 }
 
