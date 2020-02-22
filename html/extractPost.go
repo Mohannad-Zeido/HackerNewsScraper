@@ -74,11 +74,11 @@ func parseGeneralInfo(node *html.Node) (string, string, int, error) {
 	rankTD := getFirstChildElementNode(node)
 	spanRank := getFirstChildElementNode(rankTD)
 	//todo if firstChild is nil invalid post
-	rank := spanRank.FirstChild.Data
+	rank := tagText(spanRank)
 	titleTD := getNextSiblingElementNode(getNextSiblingElementNode(rankTD))
-	href := titleTD.FirstChild
+	href := getFirstChildElementNode(titleTD)
 	uri := attributeValue(href.Attr, hrefAttr)
-	hrefText := href.FirstChild.Data
+	hrefText := tagText(href)
 	fmt.Println(hrefText)
 	fmt.Println(uri)
 	fmt.Println(rank)
@@ -87,11 +87,11 @@ func parseGeneralInfo(node *html.Node) (string, string, int, error) {
 
 func parseDetails(node *html.Node) (string, int, int, error) {
 	scoreSpan := getFirstChildElementNode(node)
-	score := scoreSpan.FirstChild.Data
+	score := tagText(scoreSpan)
 	userA := getNextSiblingElementNode(scoreSpan)
-	user := userA.FirstChild.Data
+	user := tagText(userA)
 	commentsA := getNextSiblingElementNode(getNextSiblingElementNode(getNextSiblingElementNode(getNextSiblingElementNode(userA))))
-	comments := commentsA.FirstChild.Data
+	comments := tagText(commentsA)
 	fmt.Println(comments)
 	fmt.Println(user)
 	fmt.Println(score)
@@ -110,8 +110,3 @@ func findPosts(node *html.Node) *html.Node {
 	}
 	return tb
 }
-
-//getNextElement
-//goToElement
-//getElementAttributes
-//getElementText
