@@ -1,6 +1,7 @@
 package html
 
 import (
+	"fmt"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/parse"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/validate"
@@ -19,6 +20,7 @@ const (
 	endOfPostsAttrVal = "morespace"
 	nonNumbers        = "\\D"
 	internalUri       = "^item\\?id=[0-9a-zA-Z]*"
+	errParsingHTML    = "error scraping the web page"
 )
 
 var (
@@ -28,6 +30,7 @@ var (
 
 // todo i need to return error rather than nil when it is actually a parsing/traversal error
 func GetPosts(numPosts int) []types.Post {
+	//todo return errors
 	//data, err := parse.GetData("data.html")
 	currentPage := 0
 	postsLeftToGet := numPosts
@@ -38,7 +41,10 @@ func GetPosts(numPosts int) []types.Post {
 		if err != nil {
 			panic(err)
 		}
-		postsFromPage := getPostNodes(pageNode, postsLeftToGet)
+		postsFromPage, err := getPostNodes(pageNode, postsLeftToGet)
+		if err != nil {
+			panic(err)
+		}
 		posts = append(posts, postsFromPage...)
 		postsLeftToGet = postsLeftToGet - len(postsFromPage)
 		if postsLeftToGet == 0 {
@@ -48,81 +54,92 @@ func GetPosts(numPosts int) []types.Post {
 
 }
 
-func getPostNodes(node *html.Node, numPosts int) []types.Post {
+func getPostNodes(node *html.Node, numPosts int) ([]types.Post, error) {
 	var result []types.Post
-	child := findPostsInPage(node)
-	if child == nil {
-		return nil
+
+	child, err := findFirstPostNode(node)
+	if err != nil {
+		return nil, err
 	}
+
 	for {
 		var post types.Post
 
-		post, postValid := extractPost(child)
+		post, postValid, err := extractPost(child)
+		if err != nil {
+			return nil, err
+		}
+
 		if postValid {
 			result = append(result, post)
 		}
 
-		child = getNextPost(child)
-		if child == nil || len(result) == numPosts {
-			return result
+		child, err = getNextPost(child)
+		if err != nil {
+			return nil, err
+		}
+
+		if len(result) == numPosts {
+			return result, nil
 		}
 	}
 }
 
-func getNextPost(currentNode *html.Node) *html.Node {
+func getNextPost(currentNode *html.Node) (*html.Node, error) {
 
 	currentNode = getNextSiblingElementNode(currentNode)
 	if currentNode == nil {
-		return nil
+		return nil, fmt.Errorf(errParsingHTML)
 	}
 	currentNode = getNextSiblingElementNode(currentNode)
 	if currentNode == nil {
-		return nil
+		return nil, fmt.Errorf(errParsingHTML)
 	}
 	currentNode = getNextSiblingElementNode(currentNode)
 	if currentNode == nil || containsAttributeValue(currentNode.Attr, endOfPostsAttrVal) {
-		return nil
+		return nil, fmt.Errorf(errParsingHTML)
 	}
-	return currentNode
+	return currentNode, nil
 }
 
-func extractPost(currentNode *html.Node) (types.Post, bool) {
+func extractPost(currentNode *html.Node) (types.Post, bool, error) {
 	var post types.Post
 	var postValid bool
+	var err error
 
 	if currentNode == nil || !containsAttributeValue(currentNode.Attr, generalInfoTag) {
-		//todo return error
-		return types.Post{}, false
+		return types.Post{}, false, fmt.Errorf(errParsingHTML)
 	}
 	post.Title, post.Uri, post.Rank, postValid = parseGeneralInfoNode(currentNode)
 	if !postValid {
-		return types.Post{}, false
+		return types.Post{}, false, nil
 	}
-	currentNode = getGeneralInfoNode(currentNode)
-	if currentNode == nil || !containsAttributeValue(currentNode.Attr, detailsTag) {
-		//todo return error
-		return types.Post{}, false
+	currentNode, err = getPostDetailsNode(currentNode)
+	if err != nil {
+		return types.Post{}, false, fmt.Errorf(errParsingHTML)
 	}
-	post.Author, post.Comments, post.Points, postValid = parseDetailsNode(currentNode)
 
+	post.Author, post.Comments, post.Points, postValid = parseDetailsNode(currentNode)
 	if !postValid {
-		return types.Post{}, false
+		return types.Post{}, false, nil
 	}
-	return post, true
+	return post, true, nil
 }
 
-func getGeneralInfoNode(currentNode *html.Node) *html.Node {
+func getPostDetailsNode(currentNode *html.Node) (*html.Node, error) {
 	currentNode = getNextSiblingElementNode(currentNode)
 	if currentNode == nil {
-		//todo return error
-		return nil
+		return nil, fmt.Errorf(errParsingHTML)
 	}
 	currentNode = getFirstChildElementNode(currentNode)
 	if currentNode == nil {
-		//todo return error
-		return nil
+		return nil, fmt.Errorf(errParsingHTML)
 	}
-	return getNextSiblingElementNode(currentNode)
+	currentNode = getNextSiblingElementNode(currentNode)
+	if currentNode == nil || !containsAttributeValue(currentNode.Attr, detailsTag) {
+		return nil, fmt.Errorf(errParsingHTML)
+	}
+	return currentNode, nil
 }
 
 func parseGeneralInfoNode(node *html.Node) (string, string, int, bool) {
@@ -167,20 +184,30 @@ func parseDetailsNode(node *html.Node) (string, int, int, bool) {
 	return user, 1, 4, true
 }
 
-func findPostsInPage(node *html.Node) *html.Node {
-	table := tagFinder(node, tableTag, postsTableAttrVal)
-	if table == nil {
-		return nil
+func findFirstPostNode(node *html.Node) (*html.Node, error) {
+	tableNode, err := findTableOfPosts(node)
+	if err != nil {
+		return nil, err
 	}
+	return getFirstRecordInTable(tableNode)
+}
 
-	tb := getFirstChildElementNode(table)
-	if tb.Data != tbodyTag {
-		return nil
+func findTableOfPosts(node *html.Node) (*html.Node, error) {
+	tableNode := tagFinder(node, tableTag, postsTableAttrVal)
+	if tableNode == nil {
+		return nil, fmt.Errorf(errParsingHTML)
 	}
+	return tableNode, nil
+}
 
-	child := getFirstChildElementNode(tb)
-	if child == nil {
-		return nil
+func getFirstRecordInTable(tableNode *html.Node) (*html.Node, error) {
+	tBodyNode := getFirstChildElementNode(tableNode)
+	if tBodyNode.Data != tbodyTag {
+		return nil, fmt.Errorf(errParsingHTML)
 	}
-	return child
+	firstRecordNode := getFirstChildElementNode(tBodyNode)
+	if firstRecordNode == nil {
+		return nil, fmt.Errorf(errParsingHTML)
+	}
+	return firstRecordNode, nil
 }
