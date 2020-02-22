@@ -50,15 +50,10 @@ func GetPosts(numPosts int) []types.Post {
 
 func getPostNodes(node *html.Node, numPosts int) []types.Post {
 	var result []types.Post
-	child := findPosts(node)
+	child := findPostsInPage(node)
 	if child == nil {
 		return nil
 	}
-	child = getFirstChildElementNode(child)
-	if child == nil {
-		return nil
-	}
-
 	for {
 		var post types.Post
 
@@ -172,7 +167,7 @@ func parseDetailsNode(node *html.Node) (string, int, int, bool) {
 	return user, 1, 4, true
 }
 
-func findPosts(node *html.Node) *html.Node {
+func findPostsInPage(node *html.Node) *html.Node {
 	table := tagFinder(node, tableTag, postsTableAttrVal)
 	if table == nil {
 		return nil
@@ -182,5 +177,10 @@ func findPosts(node *html.Node) *html.Node {
 	if tb.Data != tbodyTag {
 		return nil
 	}
-	return tb
+
+	child := getFirstChildElementNode(tb)
+	if child == nil {
+		return nil
+	}
+	return child
 }
