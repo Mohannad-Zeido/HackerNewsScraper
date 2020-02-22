@@ -1,6 +1,7 @@
 package html
 
 import (
+	"fmt"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/parse"
 	"golang.org/x/net/html"
 )
@@ -11,11 +12,12 @@ type postNode struct {
 }
 
 const (
-	tableTag       = "table"
-	generalInfoTag = "athing"
-	postsTableTag  = "itemlist"
-	tbodyTag       = "tbody"
-	detailsTag     = ""
+	tableTag          = "table"
+	generalInfoTag    = "athing"
+	postsTableAttrVal = "itemlist"
+	tbodyTag          = "tbody"
+	hrefAttr          = "href"
+	detailsTag        = "subtext"
 )
 
 func GetPosts(numPosts int) {
@@ -34,36 +36,70 @@ func getPostNodes(node *html.Node) []postNode {
 	for {
 		var post postNode
 
-		if child == nil || !containsAttribute(child.Attr, generalInfoTag) {
+		if child == nil || !containsAttributeValue(child.Attr, generalInfoTag) {
 			return result
 		}
 		post.generalInfo = child
-
+		_, _, _, _ = parseGeneralInfo(child)
+		//todo validate the info from general info
 		child = getNextSiblingElementNode(child)
-		if child == nil || len(child.Attr) != 0 {
+		if child == nil {
+			//todo return error
+			return result
+		}
+		child = getFirstChildElementNode(child)
+		if child == nil {
+			//todo return error
+			return result
+		}
+		child = getNextSiblingElementNode(child)
+		if child == nil || !containsAttributeValue(child.Attr, detailsTag) {
+			//todo return error
 			return result
 		}
 		post.details = child
+		_, _, _, _ = parseDetails(child)
 		result = append(result, post)
 		child = getNextSiblingElementNode(child)
 		if child == nil {
+			//todo return error
 			return result
 		}
 		child = getNextSiblingElementNode(child)
 	}
 }
 
-func containsAttribute(attributes []html.Attribute, attribute string) bool {
-	for _, a := range attributes {
-		if a.Val == attribute {
-			return true
-		}
-	}
-	return false
+func parseGeneralInfo(node *html.Node) (string, string, int, error) {
+	//todo do some null child error checking
+	rankTD := getFirstChildElementNode(node)
+	spanRank := getFirstChildElementNode(rankTD)
+	//todo if firstChild is nil invalid post
+	rank := spanRank.FirstChild.Data
+	titleTD := getNextSiblingElementNode(getNextSiblingElementNode(rankTD))
+	href := titleTD.FirstChild
+	uri := attributeValue(href.Attr, hrefAttr)
+	hrefText := href.FirstChild.Data
+	fmt.Println(hrefText)
+	fmt.Println(uri)
+	fmt.Println(rank)
+	return "", "", 0, nil
+}
+
+func parseDetails(node *html.Node) (string, int, int, error) {
+	scoreSpan := getFirstChildElementNode(node)
+	score := scoreSpan.FirstChild.Data
+	userA := getNextSiblingElementNode(scoreSpan)
+	user := userA.FirstChild.Data
+	commentsA := getNextSiblingElementNode(getNextSiblingElementNode(getNextSiblingElementNode(getNextSiblingElementNode(userA))))
+	comments := commentsA.FirstChild.Data
+	fmt.Println(comments)
+	fmt.Println(user)
+	fmt.Println(score)
+	return "", 0, 0, nil
 }
 
 func findPosts(node *html.Node) *html.Node {
-	table := tableFinder(node)
+	table := tagFinder(node, tableTag, postsTableAttrVal)
 	if table == nil {
 		return nil
 	}
@@ -74,46 +110,6 @@ func findPosts(node *html.Node) *html.Node {
 	}
 	return tb
 }
-
-func tableFinder(node *html.Node) *html.Node {
-	if node == nil {
-		return nil
-	}
-
-	if node.Type == html.ElementNode && node.Data == tableTag && containsAttribute(node.Attr, postsTableTag) {
-		return node
-	}
-
-	for child := getFirstChildElementNode(node); child != nil; child = getNextSiblingElementNode(child) {
-		result := tableFinder(child)
-		if result != nil {
-			return result
-		}
-	}
-	return nil
-}
-
-func getNextSiblingElementNode(node *html.Node) *html.Node {
-	for sibling := node.NextSibling; sibling != nil; sibling = sibling.NextSibling {
-		if sibling.Type == html.ElementNode {
-			return sibling
-		}
-	}
-	return nil
-}
-
-func getFirstChildElementNode(node *html.Node) *html.Node {
-	for child := node.FirstChild; child != nil; child = child.NextSibling {
-		if child.Type == html.ElementNode {
-			return child
-		}
-	}
-	return nil
-}
-
-//func getPostNode(node *html.Node) postNode{
-//
-//}
 
 //getNextElement
 //goToElement
