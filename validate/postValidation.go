@@ -1,8 +1,7 @@
 package validate
 
 import (
-	"fmt"
-	"net/http"
+	"net/url"
 )
 
 func IsValidText(text string) bool {
@@ -13,13 +12,12 @@ func IsValidText(text string) bool {
 }
 
 func IsValidUri(uri string) bool {
-
-	fmt.Println("Testing Url: " + uri)
-	resp, err := http.Get(uri)
-	if err != nil || resp.StatusCode != http.StatusOK {
+	_, err := url.ParseRequestURI(uri)
+	if err != nil {
 		return false
 	}
 	return true
+
 }
 
 func IsValidNumber(numberToCheck int) bool {
