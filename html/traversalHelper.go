@@ -39,7 +39,11 @@ func attributeValue(attributes []html.Attribute, attribute string) string {
 }
 
 func tagText(node *html.Node) string {
-	return node.FirstChild.Data
+	textNode := node.FirstChild
+	if textNode == nil {
+		return ""
+	}
+	return textNode.Data
 }
 
 func getNextSiblingElementNode(node *html.Node) *html.Node {
@@ -58,4 +62,24 @@ func getFirstChildElementNode(node *html.Node) *html.Node {
 		}
 	}
 	return nil
+}
+
+func getNthSibling(node *html.Node, n int) *html.Node {
+	for i := 0; i < n; i++ {
+		node = getNextSiblingElementNode(node)
+		if node == nil {
+			return nil
+		}
+	}
+	return node
+}
+
+func getChildAtDepth(node *html.Node, n int) *html.Node {
+	for i := 0; i < n; i++ {
+		node = getFirstChildElementNode(node)
+		if node == nil {
+			return nil
+		}
+	}
+	return node
 }
