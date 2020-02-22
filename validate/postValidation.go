@@ -28,11 +28,11 @@ func IsValidUri(uri string) bool {
 	return true
 }
 
-func IsValidNumber(stringToCheck string) bool {
-	if isStringEmpty(stringToCheck) {
+func IsValidNumber(NumberStringToCheck string) bool {
+	if isStringEmpty(NumberStringToCheck) {
 		return false
 	}
-	numberToCheck, err := strconv.Atoi(nonNumbersRegex.ReplaceAllString(stringToCheck, ""))
+	numberToCheck, err := strconv.Atoi(nonNumbersRegex.ReplaceAllString(NumberStringToCheck, ""))
 	if err != nil {
 		return false
 	}
