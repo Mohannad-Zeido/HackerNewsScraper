@@ -1,4 +1,4 @@
-package completeDataTest
+package misingTagTextInDataTest
 
 import "github.com/Mohannad-Zeido/HackerNewsScraper/types"
 
