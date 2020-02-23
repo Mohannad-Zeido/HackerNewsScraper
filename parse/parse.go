@@ -20,7 +20,7 @@ func GetData(page int, state types.RunState) (*html.Node, error) {
 func readDataFromFile(filepath string) (*html.Node, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer file.Close()
 
@@ -30,7 +30,7 @@ func readDataFromFile(filepath string) (*html.Node, error) {
 func readDataFromWebsite(url string) (*html.Node, error) {
 	resp, err := http.Get(url)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
 		panic(resp.StatusCode)
