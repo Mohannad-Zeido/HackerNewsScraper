@@ -36,7 +36,7 @@ func processGeneralInfoNode(node *html.Node) generalInfoData {
 }
 
 func validateGeneralInfoData(rank int, uri, title string) bool {
-	if !validate.IsValidNumber(rank) || !validate.IsValidUri(uri) || !validate.IsValidText(title) {
+	if !validate.IsValidNumber(rank) || !validate.IsValidURI(uri) || !validate.IsValidText(title) {
 		return false
 	}
 	return true
