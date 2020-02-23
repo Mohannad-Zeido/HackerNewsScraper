@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	posts := html.GetPosts(95)
+	posts := html.GetPosts(35)
 	fmt.Print("posts gotten ")
 	fmt.Println(len(posts))
 	pos, err := json.MarshalIndent(posts, "", "\t")
