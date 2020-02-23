@@ -3,12 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	posts2 "github.com/Mohannad-Zeido/HackerNewsScraper/posts"
+	"github.com/Mohannad-Zeido/HackerNewsScraper/post"
 )
 
 func main() {
-	posts := posts2.GetPosts(35)
-	fmt.Print("posts gotten ")
+	posts := post.GetPosts(35)
+	fmt.Print("number of post gotten ")
 	fmt.Println(len(posts))
 	pos, err := json.MarshalIndent(posts, "", "\t")
 	if err != nil {
