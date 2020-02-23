@@ -38,7 +38,7 @@ func processDetailsNode(node *html.Node) (detailsData, error) {
 
 func getPoints(node *html.Node) (int, error) {
 	pointsNode, err := getPointsNode(node)
-	if pointsNode != nil {
+	if err != nil {
 		return 0, err
 	}
 	return helper.ExtractNumberFromString(helper.GetTagText(pointsNode))
