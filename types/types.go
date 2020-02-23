@@ -36,5 +36,6 @@ type Post struct {
 }
 
 type RunState struct {
+	TestFile  string
 	TestState bool
 }

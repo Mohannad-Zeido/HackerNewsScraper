@@ -11,7 +11,7 @@ import (
 func GetData(page int, state types.RunState) (*html.Node, error) {
 
 	if state.TestState {
-		return readDataFromFile("testData/page" + strconv.Itoa(page) + ".html")
+		return readDataFromFile(state.TestFile + strconv.Itoa(page) + ".html")
 	}
 	return readDataFromWebsite("https://news.ycombinator.com/news?p=" + strconv.Itoa(page))
 
