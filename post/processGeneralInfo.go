@@ -6,6 +6,7 @@ import (
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/validate"
 	"golang.org/x/net/html"
+	"log"
 )
 
 func processGeneralInfoNode(node *html.Node) generalInfoData {
@@ -46,6 +47,7 @@ func validateGeneralInfoData(rank int, uri, title string) bool {
 func getTitle(node *html.Node) (string, bool) {
 	titleNode, err := getTitleNode(node)
 	if err != nil {
+		log.Println(err)
 		return "", false
 	}
 	title, _ := helper.GetTagText(titleNode)
@@ -71,6 +73,7 @@ func getTitleNode(node *html.Node) (*html.Node, error) {
 func getUri(node *html.Node) (string, bool) {
 	uriNode, err := getUriNode(node)
 	if err != nil {
+		log.Println(err)
 		return "", false
 	}
 
@@ -101,6 +104,7 @@ func getUriNode(node *html.Node) (*html.Node, error) {
 func getRank(node *html.Node) (int, bool) {
 	rankNode, err := getRankNode(node)
 	if err != nil {
+		log.Println(err)
 		return 0, false
 	}
 	rank, _ := helper.GetTagText(rankNode)

@@ -6,6 +6,7 @@ import (
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/validate"
 	"golang.org/x/net/html"
+	"log"
 )
 
 func processDetailsNode(node *html.Node) detailsData {
@@ -39,6 +40,7 @@ func processDetailsNode(node *html.Node) detailsData {
 func getPoints(node *html.Node) (int, bool) {
 	pointsNode, err := getPointsNode(node)
 	if err != nil {
+		log.Println(err)
 		return 0, false
 	}
 	points, _ := helper.GetTagText(pointsNode)
@@ -56,6 +58,7 @@ func getPointsNode(node *html.Node) (*html.Node, error) {
 func getAuthor(node *html.Node) (string, bool) {
 	authorNode, err := getAuthorNode(node)
 	if err != nil {
+		log.Println(err)
 		return "", false
 	}
 	return helper.GetTagText(authorNode)
@@ -76,6 +79,7 @@ func getAuthorNode(node *html.Node) (*html.Node, error) {
 func getNumberOfComments(node *html.Node) (int, bool) {
 	commentNode, err := getCommentsNode(node)
 	if err != nil {
+		log.Println(err)
 		return 0, false
 	}
 	commentsText, textPresent := helper.GetTagText(commentNode)
