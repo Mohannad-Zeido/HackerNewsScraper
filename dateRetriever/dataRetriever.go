@@ -1,4 +1,4 @@
-package parse
+package dateRetriever
 
 import (
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
@@ -8,6 +8,8 @@ import (
 	"strconv"
 )
 
+//GetData will check the state and if TestState is will return data parsed from a file
+//If TestState is false it will return data from a url
 func GetData(page int, state types.RunState) (*html.Node, error) {
 	if state.TestState {
 		return readDataFromFile(state.TestFile + strconv.Itoa(page) + ".html")
@@ -16,6 +18,7 @@ func GetData(page int, state types.RunState) (*html.Node, error) {
 	return readDataFromWebsite("https://news.ycombinator.com/news?p=" + strconv.Itoa(page))
 }
 
+//readDataFromFile parse html from file
 func readDataFromFile(filepath string) (*html.Node, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
@@ -26,6 +29,7 @@ func readDataFromFile(filepath string) (*html.Node, error) {
 	return html.Parse(file)
 }
 
+//readDataFromWebsite parse html from url
 func readDataFromWebsite(url string) (*html.Node, error) {
 	resp, err := http.Get(url)
 	if err != nil {

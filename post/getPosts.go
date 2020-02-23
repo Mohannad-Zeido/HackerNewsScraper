@@ -3,8 +3,8 @@ package post
 import (
 	"errors"
 	"fmt"
+	"github.com/Mohannad-Zeido/HackerNewsScraper/dateRetriever"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/helper"
-	"github.com/Mohannad-Zeido/HackerNewsScraper/parse"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"golang.org/x/net/html"
 )
@@ -18,7 +18,7 @@ func GetPosts(numPosts int, state types.RunState) ([]types.Post, error) {
 	var posts []types.Post
 	for {
 		currentPage += 1
-		pageNode, err := parse.GetData(currentPage, state)
+		pageNode, err := dateRetriever.GetData(currentPage, state)
 		if err != nil {
 			return nil, err
 		}
@@ -99,6 +99,7 @@ func getFirstRecordInTable(tableNode *html.Node) (*html.Node, error) {
 	if tBodyNode == nil || tBodyNode.Data != types.TbodyTag {
 		return nil, fmt.Errorf(types.ErrGettingPostsTbodyNode)
 	}
+
 	firstRecordNode := helper.GetFirstChildElement(tBodyNode)
 	if firstRecordNode == nil || !helper.ContainsAttributeValue(firstRecordNode.Attr, types.GeneralInfoTag) {
 		return nil, fmt.Errorf(types.ErrNoPostsOnPage)
