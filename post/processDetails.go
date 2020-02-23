@@ -1,12 +1,10 @@
 package post
 
 import (
-	"errors"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/helper"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/validate"
 	"golang.org/x/net/html"
-	"log"
 )
 
 func processDetailsNode(node *html.Node) detailsData {
@@ -38,48 +36,45 @@ func processDetailsNode(node *html.Node) detailsData {
 }
 
 func getPoints(node *html.Node) (int, bool) {
-	pointsNode, err := getPointsNode(node)
-	if err != nil {
-		log.Println(err)
+	pointsNode, ok := getPointsNode(node)
+	if !ok {
 		return 0, false
 	}
 	points, _ := helper.GetTagText(pointsNode)
 	return helper.ExtractNumberFromString(points)
 }
 
-func getPointsNode(node *html.Node) (*html.Node, error) {
+func getPointsNode(node *html.Node) (*html.Node, bool) {
 	pointsNode := helper.GetFirstChildElement(node)
 	if pointsNode == nil {
-		return nil, errors.New(types.ErrGettingPointsNode)
+		return nil, false
 	}
-	return pointsNode, nil
+	return pointsNode, true
 }
 
 func getAuthor(node *html.Node) (string, bool) {
-	authorNode, err := getAuthorNode(node)
-	if err != nil {
-		log.Println(err)
+	authorNode, ok := getAuthorNode(node)
+	if !ok {
 		return "", false
 	}
 	return helper.GetTagText(authorNode)
 }
 
-func getAuthorNode(node *html.Node) (*html.Node, error) {
+func getAuthorNode(node *html.Node) (*html.Node, bool) {
 	detailsNode := helper.GetFirstChildElement(node)
 	if detailsNode == nil {
-		return nil, errors.New(types.ErrGettingAuthorDetailsNode)
+		return nil, false
 	}
 	authorNode := helper.GetNextSiblingElement(detailsNode)
 	if authorNode == nil {
-		return nil, errors.New(types.ErrGettingAuthorNode)
+		return nil, false
 	}
-	return authorNode, nil
+	return authorNode, true
 }
 
 func getNumberOfComments(node *html.Node) (int, bool) {
-	commentNode, err := getCommentsNode(node)
-	if err != nil {
-		log.Println(err)
+	commentNode, ok := getCommentsNode(node)
+	if !ok {
 		return 0, false
 	}
 	commentsText, textPresent := helper.GetTagText(commentNode)
@@ -96,16 +91,16 @@ func getNumberOfComments(node *html.Node) (int, bool) {
 	return comments, true
 }
 
-func getCommentsNode(node *html.Node) (*html.Node, error) {
+func getCommentsNode(node *html.Node) (*html.Node, bool) {
 	detailsNode := helper.GetFirstChildElement(node)
 	if detailsNode == nil {
-		return nil, errors.New(types.ErrGettingCommentsDetailsNode)
+		return nil, false
 	}
 	commentsNode := helper.GetNthSibling(detailsNode, types.CommentsNodePosition)
 	if commentsNode == nil {
-		return nil, errors.New(types.ErrGettingCommentsNode)
+		return nil, false
 	}
-	return commentsNode, nil
+	return commentsNode, false
 }
 
 func validateDetailsData(author string, points, comments int) bool {

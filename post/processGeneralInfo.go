@@ -1,12 +1,10 @@
 package post
 
 import (
-	"errors"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/helper"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/validate"
 	"golang.org/x/net/html"
-	"log"
 )
 
 func processGeneralInfoNode(node *html.Node) generalInfoData {
@@ -45,35 +43,33 @@ func validateGeneralInfoData(rank int, uri, title string) bool {
 }
 
 func getTitle(node *html.Node) (string, bool) {
-	titleNode, err := getTitleNode(node)
-	if err != nil {
-		log.Println(err)
+	titleNode, ok := getTitleNode(node)
+	if !ok {
 		return "", false
 	}
 	title, _ := helper.GetTagText(titleNode)
 	return title, true
 }
 
-func getTitleNode(node *html.Node) (*html.Node, error) {
+func getTitleNode(node *html.Node) (*html.Node, bool) {
 	generalInfoNode := helper.GetFirstChildElement(node)
 	if generalInfoNode == nil {
-		return nil, errors.New(types.ErrGettingTitleGeneralInfoNode)
+		return nil, false
 	}
 	nodeContainingTitleNode := helper.GetNthSibling(generalInfoNode, types.UriNodePositionInGeneralInfo)
 	if nodeContainingTitleNode == nil {
-		return nil, errors.New(types.ErrGettingTitleParentNode)
+		return nil, false
 	}
 	titleNode := helper.GetFirstChildElement(nodeContainingTitleNode)
 	if titleNode == nil {
-		return nil, errors.New(types.ErrGettingTitleNode)
+		return nil, false
 	}
-	return titleNode, nil
+	return titleNode, true
 }
 
 func getUri(node *html.Node) (string, bool) {
-	uriNode, err := getUriNode(node)
-	if err != nil {
-		log.Println(err)
+	uriNode, ok := getUriNode(node)
+	if !ok {
 		return "", false
 	}
 
@@ -84,37 +80,36 @@ func getUri(node *html.Node) (string, bool) {
 	return uri, true
 }
 
-func getUriNode(node *html.Node) (*html.Node, error) {
+func getUriNode(node *html.Node) (*html.Node, bool) {
 	generalInfoNode := helper.GetFirstChildElement(node)
 	if generalInfoNode == nil {
-		return nil, errors.New(types.ErrGettingUriGeneralInfoNode)
+		return nil, false
 	}
 
 	nodeContainingUriNode := helper.GetNthSibling(generalInfoNode, types.UriNodePositionInGeneralInfo)
 	if nodeContainingUriNode == nil {
-		return nil, errors.New(types.ErrGettingUriParentNode)
+		return nil, false
 	}
 	uriNode := helper.GetFirstChildElement(nodeContainingUriNode)
 	if uriNode == nil {
-		return nil, errors.New(types.ErrGettingUriNode)
+		return nil, false
 	}
-	return uriNode, nil
+	return uriNode, true
 }
 
 func getRank(node *html.Node) (int, bool) {
-	rankNode, err := getRankNode(node)
-	if err != nil {
-		log.Println(err)
+	rankNode, ok := getRankNode(node)
+	if !ok {
 		return 0, false
 	}
 	rank, _ := helper.GetTagText(rankNode)
 	return helper.ExtractNumberFromString(rank)
 }
 
-func getRankNode(node *html.Node) (*html.Node, error) {
+func getRankNode(node *html.Node) (*html.Node, bool) {
 	rankNode := helper.GetChildAtDepth(node, types.RankNodeDepth)
 	if rankNode == nil {
-		return nil, errors.New(types.ErrGettingRankNode)
+		return nil, false
 	}
-	return rankNode, nil
+	return rankNode, true
 }
