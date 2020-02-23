@@ -41,7 +41,8 @@ func getPoints(node *html.Node) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	return helper.ExtractNumberFromString(helper.GetTagText(pointsNode))
+	points, _ := helper.GetTagText(pointsNode)
+	return helper.ExtractNumberFromString(points)
 }
 
 func getPointsNode(node *html.Node) (*html.Node, error) {
@@ -57,7 +58,8 @@ func getAuthor(node *html.Node) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return helper.GetTagText(authorNode), nil
+	author, _ := helper.GetTagText(authorNode)
+	return author, nil
 }
 
 func getAuthorNode(node *html.Node) (*html.Node, error) {
@@ -77,7 +79,11 @@ func getNumberOfComments(node *html.Node) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	comments, err := helper.ExtractNumberFromString(helper.GetTagText(commentNode))
+	commentsText, textPresent := helper.GetTagText(commentNode)
+	if !textPresent {
+		return -1, nil
+	}
+	comments, err := helper.ExtractNumberFromString(commentsText)
 	if err != nil {
 		return 0, err
 	}

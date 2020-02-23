@@ -38,12 +38,12 @@ func AttributeValue(attributes []html.Attribute, attribute string) string {
 	return ""
 }
 
-func GetTagText(node *html.Node) string {
+func GetTagText(node *html.Node) (string, bool) {
 	textNode := node.FirstChild
 	if textNode == nil {
-		return ""
+		return "", false
 	}
-	return textNode.Data
+	return textNode.Data, true
 }
 
 func GetNextSiblingElement(node *html.Node) *html.Node {

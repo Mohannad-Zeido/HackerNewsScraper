@@ -48,7 +48,8 @@ func getTitle(node *html.Node) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return helper.GetTagText(titleNode), nil
+	title, _ := helper.GetTagText(titleNode)
+	return title, nil
 }
 
 func getTitleNode(node *html.Node) (*html.Node, error) {
@@ -102,7 +103,8 @@ func getRank(node *html.Node) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	return helper.ExtractNumberFromString(helper.GetTagText(rankNode))
+	rank, _ := helper.GetTagText(rankNode)
+	return helper.ExtractNumberFromString(rank)
 }
 
 func getRankNode(node *html.Node) (*html.Node, error) {
