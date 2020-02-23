@@ -10,6 +10,9 @@ import (
 )
 
 func GetPosts(numPosts int) ([]types.Post, error) {
+	if numPosts == 0 {
+		return []types.Post{}, nil
+	}
 	currentPage := 0
 	postsLeftToGet := numPosts
 	var posts []types.Post
