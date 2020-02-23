@@ -38,7 +38,7 @@ func getPostsFromPage(node *html.Node, numPosts int) ([]types.Post, error) {
 	var result []types.Post
 
 	currentNode, err := findFirstPostNode(node)
-	if err != nil || !helper.ContainsAttributeValue(currentNode.Attr, types.GeneralInfoTag) {
+	if err != nil {
 		return nil, err
 	}
 
@@ -69,8 +69,11 @@ func getNextPost(node *html.Node) (*html.Node, error) {
 	if postNode == nil {
 		return nil, errors.New(types.ErrGettingNextPost)
 	}
-	if !helper.ContainsAttributeValue(postNode.Attr, types.GeneralInfoTag) {
+	if helper.ContainsAttributeValue(postNode.Attr, types.EndOfPostsAttrVal) {
 		return nil, nil
+	}
+	if !helper.ContainsAttributeValue(postNode.Attr, types.GeneralInfoTag) {
+		return nil, errors.New(types.ErrGettingNextPost)
 	}
 	return postNode, nil
 }
@@ -86,19 +89,19 @@ func findFirstPostNode(node *html.Node) (*html.Node, error) {
 func findTableOfPosts(node *html.Node) (*html.Node, error) {
 	tableNode := helper.TagFinder(node, types.TableTag, types.PostsTableAttrVal)
 	if tableNode == nil {
-		return nil, fmt.Errorf(types.ErrParsingHTML)
+		return nil, fmt.Errorf(types.ErrGettingPostsTableNode)
 	}
 	return tableNode, nil
 }
 
 func getFirstRecordInTable(tableNode *html.Node) (*html.Node, error) {
 	tBodyNode := helper.GetFirstChildElement(tableNode)
-	if tBodyNode.Data != types.TbodyTag {
-		return nil, fmt.Errorf(types.ErrParsingHTML)
+	if tBodyNode == nil || tBodyNode.Data != types.TbodyTag {
+		return nil, fmt.Errorf(types.ErrGettingPostsTbodyNode)
 	}
 	firstRecordNode := helper.GetFirstChildElement(tBodyNode)
-	if firstRecordNode == nil {
-		return nil, fmt.Errorf(types.ErrParsingHTML)
+	if firstRecordNode == nil || !helper.ContainsAttributeValue(firstRecordNode.Attr, types.GeneralInfoTag) {
+		return nil, fmt.Errorf(types.ErrNoPostsOnPage)
 	}
 	return firstRecordNode, nil
 }

@@ -100,7 +100,7 @@ func getCommentsNode(node *html.Node) (*html.Node, bool) {
 	if commentsNode == nil {
 		return nil, false
 	}
-	return commentsNode, false
+	return commentsNode, true
 }
 
 func validateDetailsData(author string, points, comments int) bool {
