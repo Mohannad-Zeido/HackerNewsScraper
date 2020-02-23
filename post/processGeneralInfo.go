@@ -8,21 +8,23 @@ import (
 	"regexp"
 )
 
+//regex that will be used to match the internal page link
 var internalURIRegex, _ = regexp.Compile(types.InternalURI)
 
+//processGeneralInfoNode will extract and validate all the information in the first row of the post
 func processGeneralInfoNode(node *html.Node) generalInfoData {
-	rank, valid := getRank(node)
-	if !valid {
+	rank, ok := getRank(node)
+	if !ok {
 		return generalInfoData{}
 	}
 
-	uri, valid := getUri(node)
-	if !valid {
+	uri, ok := getURI(node)
+	if !ok {
 		return generalInfoData{}
 	}
 
-	title, valid := getTitle(node)
-	if !valid {
+	title, ok := getTitle(node)
+	if !ok {
 		return generalInfoData{}
 	}
 
@@ -45,6 +47,7 @@ func validateGeneralInfoData(rank int, uri, title string) bool {
 	return true
 }
 
+//getTitle will return the title for the current post
 func getTitle(node *html.Node) (string, bool) {
 	titleNode, ok := getTitleNode(node)
 	if !ok {
@@ -54,52 +57,53 @@ func getTitle(node *html.Node) (string, bool) {
 	return title, true
 }
 
+//getTitleNode is a wrapper to the getUriTitleNode
 func getTitleNode(node *html.Node) (*html.Node, bool) {
-	generalInfoNode := helper.GetFirstChildElement(node)
-	if generalInfoNode == nil {
-		return nil, false
-	}
-	nodeContainingTitleNode := helper.GetNthSibling(generalInfoNode, types.URINodePositionInGeneralInfo)
-	if nodeContainingTitleNode == nil {
-		return nil, false
-	}
-	titleNode := helper.GetFirstChildElement(nodeContainingTitleNode)
-	if titleNode == nil {
-		return nil, false
-	}
-	return titleNode, true
+	return getUriTitleNode(node)
 }
 
-func getUri(node *html.Node) (string, bool) {
-	uriNode, ok := getUriNode(node)
+//getURI will return the URI of the current post
+func getURI(node *html.Node) (string, bool) {
+	uriNode, ok := getURINode(node)
 	if !ok {
 		return "", false
 	}
 
 	uri := helper.AttributeValue(uriNode.Attr, types.URIAttr)
+	//if the uri is pointing to an internal page build the whole uri
 	if internalURIRegex.MatchString(uri) {
 		uri = "https://news.ycombinator.com/" + uri
 	}
+
 	return uri, true
 }
 
-func getUriNode(node *html.Node) (*html.Node, bool) {
+//getURINode is a wrapper to the getUriTitleNode
+func getURINode(node *html.Node) (*html.Node, bool) {
+	return getUriTitleNode(node)
+}
+
+//getUriTitleNode will return the node that contains both the URI and Title. This function assumes the parameter is
+//pointing to the posts' first row node.
+func getUriTitleNode(node *html.Node) (*html.Node, bool) {
 	generalInfoNode := helper.GetFirstChildElement(node)
 	if generalInfoNode == nil {
 		return nil, false
 	}
 
-	nodeContainingUriNode := helper.GetNthSibling(generalInfoNode, types.URINodePositionInGeneralInfo)
-	if nodeContainingUriNode == nil {
+	uriTitleParentNode := helper.GetNthSibling(generalInfoNode, types.URINodePositionInGeneralInfo)
+	if uriTitleParentNode == nil {
 		return nil, false
 	}
-	uriNode := helper.GetFirstChildElement(nodeContainingUriNode)
-	if uriNode == nil {
+	uriTitleNode := helper.GetFirstChildElement(uriTitleParentNode)
+	if uriTitleNode == nil {
 		return nil, false
 	}
-	return uriNode, true
+	return uriTitleNode, true
+
 }
 
+//getRank will return the Rank of the current post
 func getRank(node *html.Node) (int, bool) {
 	rankNode, ok := getRankNode(node)
 	if !ok {
@@ -109,6 +113,8 @@ func getRank(node *html.Node) (int, bool) {
 	return helper.ExtractNumberFromString(rank)
 }
 
+//getRankNode will return the node that contains the rank. This function assumes the parameter is
+//pointing to the posts' first row node.
 func getRankNode(node *html.Node) (*html.Node, bool) {
 	rankNode := helper.GetChildAtDepth(node, types.RankNodeDepth)
 	if rankNode == nil {
