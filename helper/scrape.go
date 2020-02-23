@@ -1,4 +1,4 @@
-package scrape
+package helper
 
 import "golang.org/x/net/html"
 

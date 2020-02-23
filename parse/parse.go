@@ -9,7 +9,7 @@ import (
 
 func GetData(page int) (*html.Node, error) {
 	return readDataFromWebsite("https://news.ycombinator.com/news?p=" + strconv.Itoa(page))
-	//return readDataFromFile("data" + strconv.Itoa(page) + ".scrape")
+	//return readDataFromFile("data" + strconv.Itoa(page) + ".helper")
 
 }
 
