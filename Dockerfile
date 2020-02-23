@@ -4,7 +4,11 @@ WORKDIR /go/src/hackerNews
 COPY . .
 
 RUN go get -d -v ./...
-RUN go test ./...
+RUN go test -v ./...
 RUN go install -v ./...
 
-CMD ["/go/bin/HackerNewsScraper --posts 35"]
+RUN cp /go/bin/HackerNewsScraper hackernews
+
+RUN ./hackernews --posts 35
+
+CMD []
