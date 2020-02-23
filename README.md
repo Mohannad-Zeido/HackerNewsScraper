@@ -7,7 +7,8 @@ of a certain tag. This resulted in 6 different arrays containing the different i
 to be matched and a post would be built. This quickly lead to an increase in complexity, so in order to reduce the 
 complexity custom traversal functions were used.
 
-## How to run:
+## How to run
+
 #####This step does not require any libraries/software to be installed
 In the main directory there is an executable file called __hackernews__.
 Open a terminal and run the executable file with the following command:
@@ -16,19 +17,23 @@ Open a terminal and run the executable file with the following command:
 
 Where 'n' is the number of posts to return. 
 
-## How to install:
+## How to install
 
-#### Using docker:
-##### 1. Docker Build:
-Please install docker using the following guide: https://docs.docker.com/. Once installed run the following command to 
-build the docker container:
+#### Using docker
+
+##### 1. Install Docker
+Please install docker using the following guide: https://docs.docker.com/
+
+##### 2. Docker Build
+
+After installed run the following command to build the docker container:
 
 `sudo docker build -t hacker-news .`
 
-Once built th output will contain the result of the test as well as an execution of the system with the required post 
-number at 35.
+while the container is being build the output can be used to obtain information on the test that were executed as well
+as an example of what the output of the application is with the required post number at 35.
 
-##### 2. Docker Run:
+##### 3. Docker Run:
 To run the container that has just been built, run the following command:
 
 `sudo docker run hacker-news "./hackernews" "--posts" "n"`
