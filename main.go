@@ -2,12 +2,24 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/post"
 )
 
 func main() {
-	posts, err := post.GetPosts(35)
+
+	var numberOfPosts int
+
+	flag.IntVar(&numberOfPosts, "posts", -1, "how many posts to print. A positive integer <= 100")
+	flag.IntVar(&numberOfPosts, "p", -1, "how many posts to print. A positive integer <= 100  (shorthand)")
+
+	flag.Parse()
+	if numberOfPosts < 0 || numberOfPosts > 100 {
+		fmt.Println("please input a valid number of posts to get (A positive integer <= 100)")
+		return
+	}
+	posts, err := post.GetPosts(numberOfPosts)
 	if err != nil {
 		fmt.Println(err)
 		return
