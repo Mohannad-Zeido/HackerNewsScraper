@@ -13,7 +13,7 @@ func GetPosts(numPosts int) ([]types.Post, error) {
 	if numPosts == 0 {
 		return []types.Post{}, nil
 	}
-	currentPage := 0
+	var currentPage int
 	postsLeftToGet := numPosts
 	var posts []types.Post
 	for {
