@@ -1,17 +1,10 @@
-package misingTagTextInDataTest
+package missingTagTextInDataTest
 
 import "github.com/Mohannad-Zeido/HackerNewsScraper/types"
 
 var (
+	testDataPath     = "testData/page"
 	AllExpectedPosts = []types.Post{
-		{
-			Title:    "post1",
-			Uri:      "https://www.post1.com",
-			Author:   "post1Author",
-			Points:   55,
-			Comments: 5,
-			Rank:     1,
-		},
 		{
 			Title:    "post2",
 			Uri:      "https://www.post2.com",
@@ -61,22 +54,6 @@ var (
 			Rank:     7,
 		},
 		{
-			Title:    "post8",
-			Uri:      "https://www.post8.com",
-			Author:   "post8Author",
-			Points:   218,
-			Comments: 88,
-			Rank:     8,
-		},
-		{
-			Title:    "post9",
-			Uri:      "https://www.post9.com",
-			Author:   "post9Author",
-			Points:   11,
-			Comments: 0,
-			Rank:     9,
-		},
-		{
 			Title:    "post10",
 			Uri:      "https://www.post10.com",
 			Author:   "post10Author",
@@ -85,67 +62,43 @@ var (
 			Rank:     10,
 		},
 		{
-			Title:    "post11",
-			Uri:      "https://www.post11.com",
-			Author:   "post11Author",
-			Points:   93,
-			Comments: 22,
-			Rank:     11,
-		},
-		{
-			Title:    "post12",
-			Uri:      "https://www.post12.com",
-			Author:   "post12Author",
-			Points:   91,
-			Comments: 14,
-			Rank:     12,
-		},
-		{
-			Title:    "post13",
-			Uri:      "https://www.post13.com",
-			Author:   "post13Author",
-			Points:   402,
-			Comments: 230,
-			Rank:     13,
-		},
-		{
 			Title:    "post14",
 			Uri:      "https://www.post14.com",
 			Author:   "post14Author",
-			Points:   402,
-			Comments: 230,
+			Points:   204,
+			Comments: 260,
 			Rank:     14,
 		},
 		{
 			Title:    "post15",
 			Uri:      "https://www.post15.com",
 			Author:   "post15Author",
-			Points:   402,
-			Comments: 230,
+			Points:   35,
+			Comments: 43,
 			Rank:     15,
 		},
 		{
 			Title:    "post16",
 			Uri:      "https://www.post16.com",
 			Author:   "post16Author",
-			Points:   402,
-			Comments: 230,
+			Points:   52,
+			Comments: 21,
 			Rank:     16,
 		},
 		{
 			Title:    "post17",
 			Uri:      "https://www.post17.com",
 			Author:   "post17Author",
-			Points:   402,
-			Comments: 230,
+			Points:   30,
+			Comments: 14,
 			Rank:     17,
 		},
 		{
 			Title:    "post18",
 			Uri:      "https://www.post18.com",
 			Author:   "post18Author",
-			Points:   402,
-			Comments: 230,
+			Points:   14,
+			Comments: 0,
 			Rank:     18,
 		},
 	}
