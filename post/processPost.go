@@ -24,10 +24,8 @@ type detailsData struct {
 func getPost(currentNode *html.Node) (types.Post, bool, error) {
 	var err error
 
-	postGeneralInfo, err := processGeneralInfoNode(currentNode)
-	if err != nil {
-		return types.Post{}, false, err
-	}
+	postGeneralInfo := processGeneralInfoNode(currentNode)
+
 	if !postGeneralInfo.valid {
 		return types.Post{}, false, nil
 	}
@@ -37,11 +35,7 @@ func getPost(currentNode *html.Node) (types.Post, bool, error) {
 		return types.Post{}, false, err
 	}
 
-	details, err := processDetailsNode(currentNode)
-	if err != nil {
-		return types.Post{}, false, err
-	}
-
+	details := processDetailsNode(currentNode)
 	if !details.valid {
 		return types.Post{}, false, nil
 	}

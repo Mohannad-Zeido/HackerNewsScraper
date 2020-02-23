@@ -8,24 +8,24 @@ import (
 	"golang.org/x/net/html"
 )
 
-func processGeneralInfoNode(node *html.Node) (generalInfoData, error) {
-	rank, err := getRank(node)
-	if err != nil {
-		return generalInfoData{}, err
+func processGeneralInfoNode(node *html.Node) generalInfoData {
+	rank, valid := getRank(node)
+	if !valid {
+		return generalInfoData{}
 	}
 
-	uri, err := getUri(node)
-	if err != nil {
-		return generalInfoData{}, err
+	uri, valid := getUri(node)
+	if !valid {
+		return generalInfoData{}
 	}
 
-	title, err := getTitle(node)
-	if err != nil {
-		return generalInfoData{}, err
+	title, valid := getTitle(node)
+	if !valid {
+		return generalInfoData{}
 	}
 
 	if !validateGeneralInfoData(rank, uri, title) {
-		return generalInfoData{}, nil
+		return generalInfoData{}
 	}
 
 	return generalInfoData{
@@ -33,7 +33,7 @@ func processGeneralInfoNode(node *html.Node) (generalInfoData, error) {
 		uri:   uri,
 		rank:  rank,
 		valid: true,
-	}, nil
+	}
 }
 
 func validateGeneralInfoData(rank int, uri, title string) bool {
@@ -43,13 +43,13 @@ func validateGeneralInfoData(rank int, uri, title string) bool {
 	return true
 }
 
-func getTitle(node *html.Node) (string, error) {
+func getTitle(node *html.Node) (string, bool) {
 	titleNode, err := getTitleNode(node)
 	if err != nil {
-		return "", err
+		return "", false
 	}
 	title, _ := helper.GetTagText(titleNode)
-	return title, nil
+	return title, true
 }
 
 func getTitleNode(node *html.Node) (*html.Node, error) {
@@ -68,17 +68,17 @@ func getTitleNode(node *html.Node) (*html.Node, error) {
 	return titleNode, nil
 }
 
-func getUri(node *html.Node) (string, error) {
+func getUri(node *html.Node) (string, bool) {
 	uriNode, err := getUriNode(node)
 	if err != nil {
-		return "", err
+		return "", false
 	}
 
 	uri := helper.AttributeValue(uriNode.Attr, types.UriAttr)
 	if types.InternalUriRegex.MatchString(uri) {
 		uri = "https://news.ycombinator.com/" + uri
 	}
-	return uri, err
+	return uri, true
 }
 
 func getUriNode(node *html.Node) (*html.Node, error) {
@@ -98,10 +98,10 @@ func getUriNode(node *html.Node) (*html.Node, error) {
 	return uriNode, nil
 }
 
-func getRank(node *html.Node) (int, error) {
+func getRank(node *html.Node) (int, bool) {
 	rankNode, err := getRankNode(node)
 	if err != nil {
-		return 0, err
+		return 0, false
 	}
 	rank, _ := helper.GetTagText(rankNode)
 	return helper.ExtractNumberFromString(rank)

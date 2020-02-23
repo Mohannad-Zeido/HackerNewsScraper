@@ -12,7 +12,7 @@ const (
 	UriAttr                        = "href"
 	DetailsTag                     = "subtext"
 	EndOfPostsAttrVal              = "morespace"
-	nonNumbers                     = "\\D"
+	nonNumbers                     = "[^\\d|\\-]"
 	internalUri                    = "^item\\?id=[0-9a-zA-Z]*"
 	NumberOfNodesPerPost           = 3
 	UriNodePositionInGeneralInfo   = 2

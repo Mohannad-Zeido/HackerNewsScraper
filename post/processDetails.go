@@ -8,24 +8,24 @@ import (
 	"golang.org/x/net/html"
 )
 
-func processDetailsNode(node *html.Node) (detailsData, error) {
-	points, err := getPoints(node)
-	if err != nil {
-		return detailsData{}, err
+func processDetailsNode(node *html.Node) detailsData {
+	points, valid := getPoints(node)
+	if !valid {
+		return detailsData{}
 	}
 
-	author, err := getAuthor(node)
-	if err != nil {
-		return detailsData{}, err
+	author, valid := getAuthor(node)
+	if !valid {
+		return detailsData{}
 	}
 
-	comments, err := getNumberOfComments(node)
-	if err != nil {
-		return detailsData{}, err
+	comments, valid := getNumberOfComments(node)
+	if !valid {
+		return detailsData{}
 	}
 
 	if !validateDetailsData(author, points, comments) {
-		return detailsData{}, nil
+		return detailsData{}
 	}
 
 	return detailsData{
@@ -33,13 +33,13 @@ func processDetailsNode(node *html.Node) (detailsData, error) {
 		points:   points,
 		comments: comments,
 		valid:    true,
-	}, nil
+	}
 }
 
-func getPoints(node *html.Node) (int, error) {
+func getPoints(node *html.Node) (int, bool) {
 	pointsNode, err := getPointsNode(node)
 	if err != nil {
-		return 0, err
+		return 0, false
 	}
 	points, _ := helper.GetTagText(pointsNode)
 	return helper.ExtractNumberFromString(points)
@@ -53,13 +53,12 @@ func getPointsNode(node *html.Node) (*html.Node, error) {
 	return pointsNode, nil
 }
 
-func getAuthor(node *html.Node) (string, error) {
+func getAuthor(node *html.Node) (string, bool) {
 	authorNode, err := getAuthorNode(node)
 	if err != nil {
-		return "", err
+		return "", false
 	}
-	author, _ := helper.GetTagText(authorNode)
-	return author, nil
+	return helper.GetTagText(authorNode)
 }
 
 func getAuthorNode(node *html.Node) (*html.Node, error) {
@@ -74,23 +73,23 @@ func getAuthorNode(node *html.Node) (*html.Node, error) {
 	return authorNode, nil
 }
 
-func getNumberOfComments(node *html.Node) (int, error) {
+func getNumberOfComments(node *html.Node) (int, bool) {
 	commentNode, err := getCommentsNode(node)
 	if err != nil {
-		return 0, err
+		return 0, false
 	}
 	commentsText, textPresent := helper.GetTagText(commentNode)
 	if !textPresent {
-		return -1, nil
+		return -1, false
 	}
-	comments, err := helper.ExtractNumberFromString(commentsText)
-	if err != nil {
-		return 0, err
+	comments, validInt := helper.ExtractNumberFromString(commentsText)
+	if !validInt {
+		return 0, validInt
 	}
 	if comments == -1 {
 		comments = 0
 	}
-	return comments, nil
+	return comments, true
 }
 
 func getCommentsNode(node *html.Node) (*html.Node, error) {
