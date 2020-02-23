@@ -10,7 +10,7 @@ import (
 func TestGetPosts_0Posts(t *testing.T) {
 	numberOfPosts := 0
 	posts, err := post.GetPosts(numberOfPosts, types.RunState{
-		TestFile:  "testData/page",
+		TestFile:  testDataPath,
 		TestState: true,
 	})
 	assert.Nil(t, err)
@@ -20,7 +20,7 @@ func TestGetPosts_0Posts(t *testing.T) {
 func TestGetPosts_1Post(t *testing.T) {
 	numberOfPosts := 1
 	posts, err := post.GetPosts(numberOfPosts, types.RunState{
-		TestFile:  "testData/page",
+		TestFile:  testDataPath,
 		TestState: true,
 	})
 	assert.Nil(t, err)
@@ -31,7 +31,7 @@ func TestGetPosts_1Post(t *testing.T) {
 func TestGetPosts_FullPage(t *testing.T) {
 	numberOfPosts := 6
 	posts, err := post.GetPosts(numberOfPosts, types.RunState{
-		TestFile:  "testData/page",
+		TestFile:  testDataPath,
 		TestState: true,
 	})
 	assert.Nil(t, err)
@@ -42,7 +42,17 @@ func TestGetPosts_FullPage(t *testing.T) {
 func TestGetPosts_1PageAndHalf(t *testing.T) {
 	numberOfPosts := 9
 	posts, err := post.GetPosts(numberOfPosts, types.RunState{
-		TestFile:  "testData/page",
+		TestFile:  testDataPath,
+		TestState: true,
+	})
+	assert.Nil(t, err)
+	assert.Equal(t, numberOfPosts, len(posts))
+	checkPosts(AllExpectedPosts, posts, numberOfPosts, t)
+}
+func TestGetPosts_AllPosts(t *testing.T) {
+	numberOfPosts := 18
+	posts, err := post.GetPosts(numberOfPosts, types.RunState{
+		TestFile:  testDataPath,
 		TestState: true,
 	})
 	assert.Nil(t, err)
@@ -53,7 +63,7 @@ func TestGetPosts_1PageAndHalf(t *testing.T) {
 func TestGetPosts_notEnoughPostData(t *testing.T) {
 	numberOfPosts := 19
 	_, err := post.GetPosts(numberOfPosts, types.RunState{
-		TestFile:  "testData/page",
+		TestFile:  testDataPath,
 		TestState: true,
 	})
 	assert.NotNil(t, err)
@@ -71,5 +81,4 @@ func checkPosts(expectedPosts, actualPosts []types.Post, expectedNumberOfPosts i
 		assert.Equal(t, expectedPosts[i].Comments, actualPosts[i].Comments)
 
 	}
-
 }

@@ -3,6 +3,7 @@ package completeDataTest
 import "github.com/Mohannad-Zeido/HackerNewsScraper/types"
 
 var (
+	testDataPath     = "testData/page"
 	AllExpectedPosts = []types.Post{
 		{
 			Title:    "post1",
@@ -104,48 +105,48 @@ var (
 			Title:    "post13",
 			Uri:      "https://www.post13.com",
 			Author:   "post13Author",
-			Points:   402,
-			Comments: 230,
+			Points:   136,
+			Comments: 58,
 			Rank:     13,
 		},
 		{
 			Title:    "post14",
 			Uri:      "https://www.post14.com",
 			Author:   "post14Author",
-			Points:   402,
-			Comments: 230,
+			Points:   204,
+			Comments: 260,
 			Rank:     14,
 		},
 		{
 			Title:    "post15",
 			Uri:      "https://www.post15.com",
 			Author:   "post15Author",
-			Points:   402,
-			Comments: 230,
+			Points:   35,
+			Comments: 43,
 			Rank:     15,
 		},
 		{
 			Title:    "post16",
 			Uri:      "https://www.post16.com",
 			Author:   "post16Author",
-			Points:   402,
-			Comments: 230,
+			Points:   52,
+			Comments: 21,
 			Rank:     16,
 		},
 		{
 			Title:    "post17",
 			Uri:      "https://www.post17.com",
 			Author:   "post17Author",
-			Points:   402,
-			Comments: 230,
+			Points:   30,
+			Comments: 14,
 			Rank:     17,
 		},
 		{
 			Title:    "post18",
 			Uri:      "https://www.post18.com",
 			Author:   "post18Author",
-			Points:   402,
-			Comments: 230,
+			Points:   14,
+			Comments: 0,
 			Rank:     18,
 		},
 	}
