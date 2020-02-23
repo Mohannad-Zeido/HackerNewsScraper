@@ -1,7 +1,8 @@
-package html
+package posts
 
 import (
 	"errors"
+	"github.com/Mohannad-Zeido/HackerNewsScraper/scrape"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/validate"
 	"golang.org/x/net/html"
@@ -57,16 +58,16 @@ func getPost(currentNode *html.Node) (types.Post, bool, error) {
 }
 
 func getPostDetailsNode(currentNode *html.Node) (*html.Node, error) {
-	currentNode = getNextSiblingElementNode(currentNode)
+	currentNode = scrape.GetNextSiblingElement(currentNode)
 	if currentNode == nil {
 		return nil, errors.New(types.ErrGettingPostDetailsNode)
 	}
-	currentNode = getFirstChildElementNode(currentNode)
+	currentNode = scrape.GetFirstChildElement(currentNode)
 	if currentNode == nil {
 		return nil, errors.New(types.ErrGettingPostDetailsNode)
 	}
-	currentNode = getNextSiblingElementNode(currentNode)
-	if currentNode == nil || !containsAttributeValue(currentNode.Attr, detailsTag) {
+	currentNode = scrape.GetNextSiblingElement(currentNode)
+	if currentNode == nil || !scrape.ContainsAttributeValue(currentNode.Attr, detailsTag) {
 		return nil, errors.New(types.ErrGettingPostDetailsNode)
 	}
 	return currentNode, nil
@@ -140,19 +141,19 @@ func getTitle(node *html.Node) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return tagText(titleNode), nil
+	return scrape.GetTagText(titleNode), nil
 }
 
 func getTitleNode(node *html.Node) (*html.Node, error) {
-	generalInfoNode := getFirstChildElementNode(node)
+	generalInfoNode := scrape.GetFirstChildElement(node)
 	if generalInfoNode == nil {
 		return nil, errors.New(types.ErrGettingTitleGeneralInfoNode)
 	}
-	nodeContainingTitleNode := getNthSibling(generalInfoNode, uriNodePositionInGeneralInfo)
+	nodeContainingTitleNode := scrape.GetNthSibling(generalInfoNode, uriNodePositionInGeneralInfo)
 	if nodeContainingTitleNode == nil {
 		return nil, errors.New(types.ErrGettingTitleParentNode)
 	}
-	titleNode := getFirstChildElementNode(nodeContainingTitleNode)
+	titleNode := scrape.GetFirstChildElement(nodeContainingTitleNode)
 	if titleNode == nil {
 		return nil, errors.New(types.ErrGettingTitleNode)
 	}
@@ -165,7 +166,7 @@ func getUri(node *html.Node) (string, error) {
 		return "", err
 	}
 
-	uri := attributeValue(uriNode.Attr, uriAttr)
+	uri := scrape.AttributeValue(uriNode.Attr, uriAttr)
 	if internalUriRegex.MatchString(uri) {
 		uri = "https://news.ycombinator.com/" + uri
 	}
@@ -173,16 +174,16 @@ func getUri(node *html.Node) (string, error) {
 }
 
 func getUriNode(node *html.Node) (*html.Node, error) {
-	generalInfoNode := getFirstChildElementNode(node)
+	generalInfoNode := scrape.GetFirstChildElement(node)
 	if generalInfoNode == nil {
 		return nil, errors.New(types.ErrGettingUriGeneralInfoNode)
 	}
 
-	nodeContainingUriNode := getNthSibling(generalInfoNode, uriNodePositionInGeneralInfo)
+	nodeContainingUriNode := scrape.GetNthSibling(generalInfoNode, uriNodePositionInGeneralInfo)
 	if nodeContainingUriNode == nil {
 		return nil, errors.New(types.ErrGettingUriParentNode)
 	}
-	uriNode := getFirstChildElementNode(nodeContainingUriNode)
+	uriNode := scrape.GetFirstChildElement(nodeContainingUriNode)
 	if uriNode == nil {
 		return nil, errors.New(types.ErrGettingUriNode)
 	}
@@ -194,11 +195,11 @@ func getRank(node *html.Node) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	return extractNumberFromString(tagText(rankNode))
+	return extractNumberFromString(scrape.GetTagText(rankNode))
 }
 
 func getRankNode(node *html.Node) (*html.Node, error) {
-	rankNode := getChildAtDepth(node, rankNodeDepth)
+	rankNode := scrape.GetChildAtDepth(node, rankNodeDepth)
 	if rankNode == nil {
 		return nil, errors.New(types.ErrGettingRankNode)
 	}
@@ -222,11 +223,11 @@ func getPoints(node *html.Node) (int, error) {
 	if pointsNode != nil {
 		return 0, err
 	}
-	return extractNumberFromString(tagText(pointsNode))
+	return extractNumberFromString(scrape.GetTagText(pointsNode))
 }
 
 func getPointsNode(node *html.Node) (*html.Node, error) {
-	pointsNode := getFirstChildElementNode(node)
+	pointsNode := scrape.GetFirstChildElement(node)
 	if pointsNode == nil {
 		return nil, errors.New(types.ErrGettingPointsNode)
 	}
@@ -238,15 +239,15 @@ func getAuthor(node *html.Node) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return tagText(authorNode), nil
+	return scrape.GetTagText(authorNode), nil
 }
 
 func getAuthorNode(node *html.Node) (*html.Node, error) {
-	detailsNode := getFirstChildElementNode(node)
+	detailsNode := scrape.GetFirstChildElement(node)
 	if detailsNode == nil {
 		return nil, errors.New(types.ErrGettingAuthorDetailsNode)
 	}
-	authorNode := getNextSiblingElementNode(detailsNode)
+	authorNode := scrape.GetNextSiblingElement(detailsNode)
 	if authorNode == nil {
 		return nil, errors.New(types.ErrGettingAuthorNode)
 	}
@@ -258,7 +259,7 @@ func getNumberOfComments(node *html.Node) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	comments, err := extractNumberFromString(tagText(commentNode))
+	comments, err := extractNumberFromString(scrape.GetTagText(commentNode))
 	if err != nil {
 		return 0, err
 	}
@@ -269,11 +270,11 @@ func getNumberOfComments(node *html.Node) (int, error) {
 }
 
 func getCommentsNode(node *html.Node) (*html.Node, error) {
-	detailsNode := getFirstChildElementNode(node)
+	detailsNode := scrape.GetFirstChildElement(node)
 	if detailsNode == nil {
 		return nil, errors.New(types.ErrGettingCommentsDetailsNode)
 	}
-	commentsNode := getNthSibling(detailsNode, commentsNodePosition)
+	commentsNode := scrape.GetNthSibling(detailsNode, commentsNodePosition)
 	if commentsNode == nil {
 		return nil, errors.New(types.ErrGettingCommentsNode)
 	}

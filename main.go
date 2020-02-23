@@ -3,11 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Mohannad-Zeido/HackerNewsScraper/html"
+	posts2 "github.com/Mohannad-Zeido/HackerNewsScraper/posts"
 )
 
 func main() {
-	posts := html.GetPosts(35)
+	posts := posts2.GetPosts(35)
 	fmt.Print("posts gotten ")
 	fmt.Println(len(posts))
 	pos, err := json.MarshalIndent(posts, "", "\t")

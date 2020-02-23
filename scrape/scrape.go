@@ -1,18 +1,18 @@
-package html
+package scrape
 
 import "golang.org/x/net/html"
 
-func tagFinder(node *html.Node, tagName, attrValue string) *html.Node {
+func TagFinder(node *html.Node, tagName, attrValue string) *html.Node {
 	if node == nil {
 		return nil
 	}
 
-	if node.Type == html.ElementNode && node.Data == tagName && containsAttributeValue(node.Attr, attrValue) {
+	if node.Type == html.ElementNode && node.Data == tagName && ContainsAttributeValue(node.Attr, attrValue) {
 		return node
 	}
 
-	for child := getFirstChildElementNode(node); child != nil; child = getNextSiblingElementNode(child) {
-		result := tagFinder(child, tagName, attrValue)
+	for child := GetFirstChildElement(node); child != nil; child = GetNextSiblingElement(child) {
+		result := TagFinder(child, tagName, attrValue)
 		if result != nil {
 			return result
 		}
@@ -20,7 +20,7 @@ func tagFinder(node *html.Node, tagName, attrValue string) *html.Node {
 	return nil
 }
 
-func containsAttributeValue(attributes []html.Attribute, attributeValue string) bool {
+func ContainsAttributeValue(attributes []html.Attribute, attributeValue string) bool {
 	for _, a := range attributes {
 		if a.Val == attributeValue {
 			return true
@@ -29,7 +29,7 @@ func containsAttributeValue(attributes []html.Attribute, attributeValue string) 
 	return false
 }
 
-func attributeValue(attributes []html.Attribute, attribute string) string {
+func AttributeValue(attributes []html.Attribute, attribute string) string {
 	for _, a := range attributes {
 		if a.Key == attribute {
 			return a.Val
@@ -38,7 +38,7 @@ func attributeValue(attributes []html.Attribute, attribute string) string {
 	return ""
 }
 
-func tagText(node *html.Node) string {
+func GetTagText(node *html.Node) string {
 	textNode := node.FirstChild
 	if textNode == nil {
 		return ""
@@ -46,7 +46,7 @@ func tagText(node *html.Node) string {
 	return textNode.Data
 }
 
-func getNextSiblingElementNode(node *html.Node) *html.Node {
+func GetNextSiblingElement(node *html.Node) *html.Node {
 	for sibling := node.NextSibling; sibling != nil; sibling = sibling.NextSibling {
 		if sibling.Type == html.ElementNode {
 			return sibling
@@ -55,7 +55,7 @@ func getNextSiblingElementNode(node *html.Node) *html.Node {
 	return nil
 }
 
-func getFirstChildElementNode(node *html.Node) *html.Node {
+func GetFirstChildElement(node *html.Node) *html.Node {
 	for child := node.FirstChild; child != nil; child = child.NextSibling {
 		if child.Type == html.ElementNode {
 			return child
@@ -64,9 +64,9 @@ func getFirstChildElementNode(node *html.Node) *html.Node {
 	return nil
 }
 
-func getNthSibling(node *html.Node, n int) *html.Node {
+func GetNthSibling(node *html.Node, n int) *html.Node {
 	for i := 0; i < n; i++ {
-		node = getNextSiblingElementNode(node)
+		node = GetNextSiblingElement(node)
 		if node == nil {
 			return nil
 		}
@@ -74,9 +74,9 @@ func getNthSibling(node *html.Node, n int) *html.Node {
 	return node
 }
 
-func getChildAtDepth(node *html.Node, n int) *html.Node {
+func GetChildAtDepth(node *html.Node, n int) *html.Node {
 	for i := 0; i < n; i++ {
-		node = getFirstChildElementNode(node)
+		node = GetFirstChildElement(node)
 		if node == nil {
 			return nil
 		}

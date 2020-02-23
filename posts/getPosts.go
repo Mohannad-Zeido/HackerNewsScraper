@@ -1,9 +1,10 @@
-package html
+package posts
 
 import (
 	"errors"
 	"fmt"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/parse"
+	"github.com/Mohannad-Zeido/HackerNewsScraper/scrape"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"golang.org/x/net/html"
 	"regexp"
@@ -59,7 +60,7 @@ func getPostsFromPage(node *html.Node, numPosts int) ([]types.Post, error) {
 	var result []types.Post
 
 	currentNode, err := findFirstPostNode(node)
-	if err != nil || !containsAttributeValue(currentNode.Attr, generalInfoTag) {
+	if err != nil || !scrape.ContainsAttributeValue(currentNode.Attr, generalInfoTag) {
 		return nil, err
 	}
 
@@ -86,11 +87,11 @@ func getPostsFromPage(node *html.Node, numPosts int) ([]types.Post, error) {
 }
 
 func getNextPost(node *html.Node) (*html.Node, error) {
-	postNode := getNthSibling(node, numberOfNodesPerPost)
+	postNode := scrape.GetNthSibling(node, numberOfNodesPerPost)
 	if postNode == nil {
 		return nil, errors.New(types.ErrGettingNextPost)
 	}
-	if !containsAttributeValue(postNode.Attr, generalInfoTag) {
+	if !scrape.ContainsAttributeValue(postNode.Attr, generalInfoTag) {
 		return nil, nil
 	}
 	return postNode, nil
@@ -105,7 +106,7 @@ func findFirstPostNode(node *html.Node) (*html.Node, error) {
 }
 
 func findTableOfPosts(node *html.Node) (*html.Node, error) {
-	tableNode := tagFinder(node, tableTag, postsTableAttrVal)
+	tableNode := scrape.TagFinder(node, tableTag, postsTableAttrVal)
 	if tableNode == nil {
 		return nil, fmt.Errorf(types.ErrParsingHTML)
 	}
@@ -113,11 +114,11 @@ func findTableOfPosts(node *html.Node) (*html.Node, error) {
 }
 
 func getFirstRecordInTable(tableNode *html.Node) (*html.Node, error) {
-	tBodyNode := getFirstChildElementNode(tableNode)
+	tBodyNode := scrape.GetFirstChildElement(tableNode)
 	if tBodyNode.Data != tbodyTag {
 		return nil, fmt.Errorf(types.ErrParsingHTML)
 	}
-	firstRecordNode := getFirstChildElementNode(tBodyNode)
+	firstRecordNode := scrape.GetFirstChildElement(tBodyNode)
 	if firstRecordNode == nil {
 		return nil, fmt.Errorf(types.ErrParsingHTML)
 	}
