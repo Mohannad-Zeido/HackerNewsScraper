@@ -9,7 +9,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func GetPosts(numPosts int) ([]types.Post, error) {
+func GetPosts(numPosts int, state types.RunState) ([]types.Post, error) {
 	if numPosts == 0 {
 		return []types.Post{}, nil
 	}
@@ -18,7 +18,7 @@ func GetPosts(numPosts int) ([]types.Post, error) {
 	var posts []types.Post
 	for {
 		currentPage += 1
-		pageNode, err := parse.GetData(currentPage)
+		pageNode, err := parse.GetData(currentPage, state)
 		if err != nil {
 			return nil, err
 		}

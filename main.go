@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/post"
+	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 		fmt.Println("please input a valid number of posts to get (A positive integer <= 100)")
 		return
 	}
-	posts, err := post.GetPosts(numberOfPosts)
+	posts, err := post.GetPosts(numberOfPosts, types.RunState{TestState: false})
 	if err != nil {
 		fmt.Println(err)
 		return

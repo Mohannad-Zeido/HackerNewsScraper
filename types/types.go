@@ -34,3 +34,7 @@ type Post struct {
 	Comments int    `json:"comments"`
 	Rank     int    `json:"rank"`
 }
+
+type RunState struct {
+	TestState bool
+}

@@ -1,15 +1,19 @@
 package parse
 
 import (
+	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"golang.org/x/net/html"
 	"net/http"
 	"os"
 	"strconv"
 )
 
-func GetData(page int) (*html.Node, error) {
+func GetData(page int, state types.RunState) (*html.Node, error) {
+
+	if state.TestState {
+		return readDataFromFile("testData/page" + strconv.Itoa(page) + ".html")
+	}
 	return readDataFromWebsite("https://news.ycombinator.com/news?p=" + strconv.Itoa(page))
-	//return readDataFromFile("data" + strconv.Itoa(page) + ".helper")
 
 }
 
