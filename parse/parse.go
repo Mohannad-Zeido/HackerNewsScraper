@@ -9,12 +9,11 @@ import (
 )
 
 func GetData(page int, state types.RunState) (*html.Node, error) {
-
 	if state.TestState {
 		return readDataFromFile(state.TestFile + strconv.Itoa(page) + ".html")
 	}
-	return readDataFromWebsite("https://news.ycombinator.com/news?p=" + strconv.Itoa(page))
 
+	return readDataFromWebsite("https://news.ycombinator.com/news?p=" + strconv.Itoa(page))
 }
 
 func readDataFromFile(filepath string) (*html.Node, error) {

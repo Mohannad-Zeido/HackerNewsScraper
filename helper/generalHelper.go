@@ -6,8 +6,11 @@ import (
 	"strconv"
 )
 
+//the compiled regular expression
 var nonNumbersRegex, _ = regexp.Compile(types.NonNumbers)
 
+//ExtractNumberFromString will return the number that is present in the string.
+//an empty string is the indication that a number is not present. as a result the return value will be -1
 func ExtractNumberFromString(s string) (int, bool) {
 	number := nonNumbersRegex.ReplaceAllString(s, "")
 	if number == "" {
