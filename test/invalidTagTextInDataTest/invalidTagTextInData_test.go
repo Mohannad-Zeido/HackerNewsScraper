@@ -65,7 +65,7 @@ func checkPosts(expectedPosts, actualPosts []types.Post, expectedNumberOfPosts i
 	for i := 0; i < expectedNumberOfPosts; i++ {
 		t.Logf("checking post %d", i+1)
 		assert.Equal(t, expectedPosts[i].Title, actualPosts[i].Title)
-		assert.Equal(t, expectedPosts[i].Uri, actualPosts[i].Uri)
+		assert.Equal(t, expectedPosts[i].URI, actualPosts[i].URI)
 		assert.Equal(t, expectedPosts[i].Rank, actualPosts[i].Rank)
 		assert.Equal(t, expectedPosts[i].Points, actualPosts[i].Points)
 		assert.Equal(t, expectedPosts[i].Author, actualPosts[i].Author)

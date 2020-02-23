@@ -41,7 +41,7 @@ func getPost(currentNode *html.Node) (types.Post, bool, error) {
 	}
 	return types.Post{
 		Title:    postGeneralInfo.title,
-		Uri:      postGeneralInfo.uri,
+		URI:      postGeneralInfo.uri,
 		Author:   details.author,
 		Points:   details.points,
 		Comments: details.comments,

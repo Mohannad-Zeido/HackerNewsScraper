@@ -2,12 +2,14 @@ package helper
 
 import (
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
+	"regexp"
 	"strconv"
 )
 
-func ExtractNumberFromString(s string) (int, bool) {
+var nonNumbersRegex, _ = regexp.Compile(types.NonNumbers)
 
-	number := types.NonNumbersRegex.ReplaceAllString(s, "")
+func ExtractNumberFromString(s string) (int, bool) {
+	number := nonNumbersRegex.ReplaceAllString(s, "")
 	if number == "" {
 		number = "-1"
 	}

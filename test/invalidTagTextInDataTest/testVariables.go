@@ -7,7 +7,7 @@ var (
 	AllExpectedPosts = []types.Post{
 		{
 			Title:    "post3",
-			Uri:      "https://www.post3.com",
+			URI:      "https://www.post3.com",
 			Author:   "post3Author",
 			Points:   128,
 			Comments: 34,
@@ -15,7 +15,7 @@ var (
 		},
 		{
 			Title:    "post4",
-			Uri:      "https://www.post4.com",
+			URI:      "https://www.post4.com",
 			Author:   "post4Author",
 			Points:   77,
 			Comments: 33,
@@ -23,7 +23,7 @@ var (
 		},
 		{
 			Title:    "post5",
-			Uri:      "https://www.post5.com",
+			URI:      "https://www.post5.com",
 			Author:   "post5Author",
 			Points:   39,
 			Comments: 27,
@@ -31,7 +31,7 @@ var (
 		},
 		{
 			Title:    "post7",
-			Uri:      "https://www.post7.com",
+			URI:      "https://www.post7.com",
 			Author:   "post7Author",
 			Points:   285,
 			Comments: 125,
@@ -39,7 +39,7 @@ var (
 		},
 		{
 			Title:    "post9",
-			Uri:      "https://www.post9.com",
+			URI:      "https://www.post9.com",
 			Author:   "post9Author",
 			Points:   11,
 			Comments: 0,
@@ -47,7 +47,7 @@ var (
 		},
 		{
 			Title:    "post10",
-			Uri:      "https://www.post10.com",
+			URI:      "https://www.post10.com",
 			Author:   "post10Author",
 			Points:   123,
 			Comments: 16,
@@ -55,7 +55,7 @@ var (
 		},
 		{
 			Title:    "post12",
-			Uri:      "https://www.post12.com",
+			URI:      "https://www.post12.com",
 			Author:   "post12Author",
 			Points:   91,
 			Comments: 14,
@@ -63,7 +63,7 @@ var (
 		},
 		{
 			Title:    "post13",
-			Uri:      "https://www.post13.com",
+			URI:      "https://www.post13.com",
 			Author:   "post13Author",
 			Points:   136,
 			Comments: 58,
@@ -71,7 +71,7 @@ var (
 		},
 		{
 			Title:    "post14",
-			Uri:      "https://www.post14.com",
+			URI:      "https://www.post14.com",
 			Author:   "post14Author",
 			Points:   204,
 			Comments: 260,
@@ -79,7 +79,7 @@ var (
 		},
 		{
 			Title:    "post16",
-			Uri:      "https://www.post16.com",
+			URI:      "https://www.post16.com",
 			Author:   "post16Author",
 			Points:   52,
 			Comments: 21,
@@ -87,7 +87,7 @@ var (
 		},
 		{
 			Title:    "post18",
-			Uri:      "https://www.post18.com",
+			URI:      "https://www.post18.com",
 			Author:   "post18Author",
 			Points:   14,
 			Comments: 0,

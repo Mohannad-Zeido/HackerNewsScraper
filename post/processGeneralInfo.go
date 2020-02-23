@@ -5,7 +5,10 @@ import (
 	"github.com/Mohannad-Zeido/HackerNewsScraper/types"
 	"github.com/Mohannad-Zeido/HackerNewsScraper/validate"
 	"golang.org/x/net/html"
+	"regexp"
 )
+
+var internalURIRegex, _ = regexp.Compile(types.InternalURI)
 
 func processGeneralInfoNode(node *html.Node) generalInfoData {
 	rank, valid := getRank(node)
@@ -56,7 +59,7 @@ func getTitleNode(node *html.Node) (*html.Node, bool) {
 	if generalInfoNode == nil {
 		return nil, false
 	}
-	nodeContainingTitleNode := helper.GetNthSibling(generalInfoNode, types.UriNodePositionInGeneralInfo)
+	nodeContainingTitleNode := helper.GetNthSibling(generalInfoNode, types.URINodePositionInGeneralInfo)
 	if nodeContainingTitleNode == nil {
 		return nil, false
 	}
@@ -73,8 +76,8 @@ func getUri(node *html.Node) (string, bool) {
 		return "", false
 	}
 
-	uri := helper.AttributeValue(uriNode.Attr, types.UriAttr)
-	if types.InternalUriRegex.MatchString(uri) {
+	uri := helper.AttributeValue(uriNode.Attr, types.URIAttr)
+	if internalURIRegex.MatchString(uri) {
 		uri = "https://news.ycombinator.com/" + uri
 	}
 	return uri, true
@@ -86,7 +89,7 @@ func getUriNode(node *html.Node) (*html.Node, bool) {
 		return nil, false
 	}
 
-	nodeContainingUriNode := helper.GetNthSibling(generalInfoNode, types.UriNodePositionInGeneralInfo)
+	nodeContainingUriNode := helper.GetNthSibling(generalInfoNode, types.URINodePositionInGeneralInfo)
 	if nodeContainingUriNode == nil {
 		return nil, false
 	}

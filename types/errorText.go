@@ -1,5 +1,6 @@
 package types
 
+//errorText contains all the text for all the errors in the system
 const (
 	ErrGettingNextPost        = "parsing error getting the next post"
 	ErrGettingPostDetailsNode = "parsing error getting post details node"
